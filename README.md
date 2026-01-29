@@ -46,6 +46,8 @@ Excel文件应包含以下列（第一行为表头）：
 - 职位
 - 地点
 - 投递截止
+- 薪资
+- 福利待遇
 - 操作（可以是链接或文本）
 
 ## 安装和运行
@@ -145,9 +147,60 @@ npm run dev
 - Axios (HTTP请求)
 - CSS3
 
+## 服务器部署
+
+### 腾讯云宝塔系统部署
+
+详细的部署指南请查看 **[DEPLOY.md](./DEPLOY.md)**
+
+**快速部署步骤：**
+
+1. **上传项目到服务器**
+   ```bash
+   # 使用 Git 克隆或上传文件到 /www/wwwroot/job-info-website/
+   ```
+
+2. **安装依赖并构建**
+   ```bash
+   cd /www/wwwroot/job-info-website/backend
+   npm install --production
+   
+   cd ../frontend
+   npm install && npm run build
+   ```
+
+3. **启动后端服务（PM2）**
+   ```bash
+   cd /www/wwwroot/job-info-website
+   pm2 start ecosystem.config.js
+   pm2 save
+   ```
+
+4. **配置 Nginx**
+   - 在宝塔面板创建站点，根目录指向 `frontend/dist`
+   - 配置反向代理：`/api` → `http://localhost:3001`
+   - 参考 `nginx.conf.example` 文件
+
+5. **上传 Excel 数据**
+   - 将 `jobs.xlsx` 上传到 `backend/uploads/` 目录
+
+**一键部署脚本：**
+```bash
+chmod +x deploy.sh
+./deploy.sh
+```
+
+**检查部署状态：**
+```bash
+chmod +x check-deploy.sh
+./check-deploy.sh
+```
+
 ## 注意事项
 
 - 确保Excel文件的第一行是表头
 - 上传的Excel文件会替换之前的文件
 - 支持.xlsx和.xls格式
 - 城市筛选支持多城市（用逗号分隔）
+- 行业下拉选项自动从Excel的「行业」列提取，无需API调用
+- 「只看实习」筛选仅显示标签中包含「实习」的岗位
