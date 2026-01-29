@@ -1,0 +1,366 @@
+.app {
+  min-height: 100vh;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h1 {
+  color: #333;
+  font-size: 28px;
+}
+
+.upload-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.upload-button {
+  padding: 10px 20px;
+  background: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.upload-button:hover {
+  background: #40a9ff;
+}
+
+.file-name {
+  color: #666;
+  font-size: 14px;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.filter-checkbox input {
+  width: 14px;
+  height: 14px;
+}
+
+.filter-group label {
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 150px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.filter-select:hover {
+  border-color: #40a9ff;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #1890ff;
+}
+
+.filter-search {
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px 20px;
+}
+
+.loading,
+.empty-message {
+  padding: 40px;
+  text-align: center;
+  color: #999;
+  font-size: 16px;
+}
+
+.jobs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.jobs-table thead {
+  background: #fafafa;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.jobs-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e8e8e8;
+  white-space: nowrap;
+}
+
+.jobs-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #666;
+}
+
+.jobs-table tbody tr:hover {
+  background: #f5f5f5;
+}
+
+.jobs-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.action-link {
+  color: #1890ff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.action-link:hover {
+  color: #40a9ff;
+  text-decoration: underline;
+}
+
+/* 岗位卡片列表 */
+.table-container {
+  max-height: none;
+  overflow: visible;
+}
+
+.jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.job-card {
+  border-radius: 10px;
+  border: 1px solid #f0f0f0;
+  padding: 16px 18px;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-2px);
+  border-color: #e6f7ff;
+  box-shadow: 0 8px 20px rgba(24, 144, 255, 0.12);
+}
+
+.job-card-main {
+  display: flex;
+  gap: 16px;
+}
+
+.job-card-logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1890ff, #40a9ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.job-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.job-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.job-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.job-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f1f1f;
+}
+
+.job-offer-type {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(24, 144, 255, 0.08);
+  color: #1890ff;
+}
+
+.job-company-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #666;
+}
+
+.job-company {
+  font-weight: 500;
+}
+
+.job-location {
+  padding-left: 8px;
+  border-left: 1px solid #e8e8e8;
+}
+
+.job-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.job-tag {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f5f5f5;
+  color: #595959;
+}
+
+.job-footer {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.job-deadline {
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+.job-apply-btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #1890ff;
+  color: #fff;
+  font-size: 13px;
+  text-decoration: none;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.job-apply-btn:hover {
+  background: #40a9ff;
+  box-shadow: 0 4px 10px rgba(24, 144, 255, 0.3);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+
+  .job-card-main {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .logo-circle {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+  }
+}
