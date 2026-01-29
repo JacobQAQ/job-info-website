@@ -106,10 +106,13 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>求职信息网站</h1>
+        <h1>求职信息</h1>
+        <p className="app-header-sub">发现校招与实习机会</p>
       </header>
 
-      <div className="filters">
+      <div className="filters-section">
+        <p className="filters-section-title">筛选</p>
+        <div className="filters">
         <div className="filter-row">
           <div className="filter-group">
             <label>城市：</label>
@@ -158,6 +161,7 @@ function App() {
             onChange={(e) => setSearchKeyword(e.target.value)}
           />
         </div>
+        </div>
       </div>
 
       <div className="table-container">
@@ -168,7 +172,9 @@ function App() {
             暂无岗位数据
           </div>
         ) : (
-          <div className="jobs-list">
+          <div className="jobs-section">
+            <p className="jobs-section-title">岗位</p>
+            <div className="jobs-list">
             {jobs.map((job, index) => {
               const offerType = getOfferType(job)
               const tags = getTags(job)
@@ -215,16 +221,6 @@ function App() {
                         <span className="job-deadline">
                           截止时间：{job.投递截止 || '未注明'}
                         </span>
-                        {job.操作 && (
-                          <a
-                            href={job.操作}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="job-apply-btn"
-                          >
-                            {job.操作.startsWith('http') ? '查看详情' : job.操作}
-                          </a>
-                        )}
                       </div>
                     </div>
 
@@ -241,11 +237,22 @@ function App() {
                           <span className="job-benefits-value">{job.福利待遇}</span>
                         </div>
                       )}
+                      {job.操作 && (
+                        <a
+                          href={job.操作}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="job-apply-btn"
+                        >
+                          {job.操作.startsWith('http') ? '查看详情' : job.操作}
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
               )
             })}
+            </div>
           </div>
         )}
       </div>
