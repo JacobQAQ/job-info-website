@@ -151,9 +151,19 @@ npm run dev
 
 ### 腾讯云宝塔系统部署
 
-详细的部署指南请查看 **[DEPLOY.md](./DEPLOY.md)**
+**部署方案选择：**
 
-**快速部署步骤：**
+1. **独立目录部署**（新域名或独立站点）
+   - 详细指南：[DEPLOY.md](./DEPLOY.md)
+   - 项目路径：`/www/wwwroot/job-info-website/`
+   - 访问路径：`http://你的域名/`
+
+2. **子文件夹部署**（已有域名，如 starterhunt.asia）
+   - 详细指南：[DEPLOY_SUBFOLDER.md](./DEPLOY_SUBFOLDER.md)
+   - 项目路径：`/www/wwwroot/starterhunt.asia/job-info/`
+   - 访问路径：`http://starterhunt.asia/job-info/` 或 `http://starterhunt.asia/`
+
+**快速部署步骤（独立目录）：**
 
 1. **上传项目到服务器**
    ```bash

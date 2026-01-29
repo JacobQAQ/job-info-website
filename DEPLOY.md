@@ -41,25 +41,48 @@ npm -v     # 应显示 9.x 或更高
 
 ## 二、上传项目文件
 
-### 2.1 创建项目目录
+### 2.1 选择部署方案
 
+**方案 A：独立目录部署（推荐用于新域名）**
+- 项目路径：`/www/wwwroot/job-info-website/`
+- 访问路径：`http://你的域名/`
+
+**方案 B：子文件夹部署（推荐用于已有域名）**
+- 项目路径：`/www/wwwroot/starterhunt.asia/job-info/`
+- 访问路径：`http://starterhunt.asia/job-info/` 或 `http://starterhunt.asia/`
+- **详细步骤请查看 [DEPLOY_SUBFOLDER.md](./DEPLOY_SUBFOLDER.md)**
+
+### 2.2 创建项目目录
+
+**独立目录部署：**
 在宝塔 **文件管理** 中创建目录：
 ```
 /www/wwwroot/job-info-website/
 ```
 
-### 2.2 上传文件
+**子文件夹部署：**
+```
+/www/wwwroot/starterhunt.asia/job-info/
+```
+
+### 2.3 上传文件
 
 **方式一：使用宝塔文件管理器**
 1. 在本地将整个项目文件夹压缩为 `job-info-website.zip`
-2. 在宝塔文件管理器中上传到 `/www/wwwroot/`
+2. 在宝塔文件管理器中上传到目标目录
 3. 解压文件
 
 **方式二：使用 Git（推荐）**
 ```bash
+# 独立目录
 cd /www/wwwroot
 git clone 你的仓库地址 job-info-website
 cd job-info-website
+
+# 子文件夹
+cd /www/wwwroot/starterhunt.asia
+git clone 你的仓库地址 job-info
+cd job-info
 ```
 
 **方式三：使用 FTP/SFTP**
@@ -431,7 +454,9 @@ chmod +x deploy.sh
 
 部署完成后，访问你的域名即可使用求职信息网站。
 
+**子文件夹部署请参考：** [DEPLOY_SUBFOLDER.md](./DEPLOY_SUBFOLDER.md)
+
 如有问题，检查：
 1. PM2 日志：`pm2 logs`
 2. Nginx 日志：`/www/wwwlogs/`
-3. 后端日志：`/www/wwwroot/job-info-website/logs/`
+3. 后端日志：`/www/wwwroot/job-info-website/logs/` 或 `/www/wwwroot/starterhunt.asia/job-info/logs/`
