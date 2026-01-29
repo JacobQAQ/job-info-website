@@ -2,7 +2,10 @@ import React, { useState, useEffect, useMemo } from 'react'
 import axios from 'axios'
 import './App.css'
 
-const API_BASE_URL = '/api'
+// 使用 Vite 的 base URL，自动适配子路径部署
+// 如果 base: '/job-info/'，则 API_BASE_URL 会是 '/job-info/api'
+// 如果 base: '/'，则 API_BASE_URL 会是 '/api'
+const API_BASE_URL = `${import.meta.env.BASE_URL}api`.replace(/\/+/g, '/')
 
 function App() {
   const [allJobs, setAllJobs] = useState([])

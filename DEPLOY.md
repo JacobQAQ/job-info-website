@@ -1,133 +1,93 @@
-# 腾讯云宝塔系统部署指南
+# 子文件夹部署指南（starterhunt.asia）
 
-## 部署架构
+## 📋 部署方案说明
 
-- **前端**：React + Vite，构建为静态文件，由 Nginx 托管
-- **后端**：Node.js + Express，运行在 3001 端口，使用 PM2 管理
-- **反向代理**：Nginx 将 `/api` 请求转发到后端
+如果你的项目需要放在 `starterhunt.asia` 的子文件夹下（如 `/job-info/`），有两种方案：
 
----
+### 方案 A：子路径访问（推荐用于多项目共存）
+- **项目路径**：`/www/wwwroot/starterhunt.asia/job-info/`
+- **访问路径**：`http://starterhunt.asia/job-info/`
+- **适用场景**：域名下还有其他项目，需要路径区分
 
-## 一、服务器环境准备
-
-### 1.1 登录宝塔面板
-
-访问 `http://你的服务器IP:8888`，使用宝塔账号登录。
-
-### 1.2 安装必要软件
-
-在宝塔面板 → **软件商店** 安装：
-
-- ✅ **Nginx**（通常已安装）
-- ✅ **PM2 管理器**（或通过终端安装）
-- ✅ **Node.js 版本管理器**（推荐 Node.js 18+）
-
-**安装 PM2（如果未安装）：**
-```bash
-npm install -g pm2
-```
-
-### 1.3 检查 Node.js 版本
-
-在宝塔 **终端** 执行：
-```bash
-node -v    # 应显示 v18.x 或更高
-npm -v     # 应显示 9.x 或更高
-```
-
-如果未安装或版本过低，在宝塔面板 → **软件商店** → **Node.js 版本管理器** 安装 Node.js 18 或 20。
+### 方案 B：根路径访问（推荐用于单一项目）
+- **项目路径**：`/www/wwwroot/starterhunt.asia/job-info/`
+- **访问路径**：`http://starterhunt.asia/`
+- **适用场景**：这是域名下的主要项目
 
 ---
 
-## 二、上传项目文件
+## 🚀 方案 A：子路径部署（/job-info/）
 
-### 2.1 选择部署方案
+### 步骤 1：上传项目到子文件夹
 
-**方案 A：独立目录部署（推荐用于新域名）**
-- 项目路径：`/www/wwwroot/job-info-website/`
-- 访问路径：`http://你的域名/`
-
-**方案 B：子文件夹部署（推荐用于已有域名）**
-- 项目路径：`/www/wwwroot/starterhunt.asia/job-info/`
-- 访问路径：`http://starterhunt.asia/job-info/` 或 `http://starterhunt.asia/`
-- **详细步骤请查看 [DEPLOY_SUBFOLDER.md](./DEPLOY_SUBFOLDER.md)**
-
-### 2.2 创建项目目录
-
-**独立目录部署：**
-在宝塔 **文件管理** 中创建目录：
-```
-/www/wwwroot/job-info-website/
-```
-
-**子文件夹部署：**
-```
-/www/wwwroot/starterhunt.asia/job-info/
-```
-
-### 2.3 上传文件
-
-**方式一：使用宝塔文件管理器**
-1. 在本地将整个项目文件夹压缩为 `job-info-website.zip`
-2. 在宝塔文件管理器中上传到目标目录
-3. 解压文件
-
-**方式二：使用 Git（推荐）**
 ```bash
-# 独立目录
-cd /www/wwwroot
-git clone 你的仓库地址 job-info-website
-cd job-info-website
-
-# 子文件夹
 cd /www/wwwroot/starterhunt.asia
-git clone 你的仓库地址 job-info
+mkdir -p job-info
 cd job-info
+
+# 使用 Git 克隆
+git clone 你的仓库地址 .
+
+# 或上传 ZIP 文件并解压到 job-info 目录
 ```
 
-**方式三：使用 FTP/SFTP**
-使用 FileZilla 等工具上传整个项目文件夹。
+### 步骤 2：配置前端构建路径
 
----
+**修改 `frontend/vite.config.js`：**
 
-## 三、安装依赖
+```javascript
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
-### 3.1 安装后端依赖
+export default defineConfig({
+  plugins: [react],
+  base: '/job-info/', // 添加这一行，修改为你的子路径
+  server: {
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true
+      }
+    }
+  }
+})
+```
+
+**或者直接使用提供的配置：**
+```bash
+cd /www/wwwroot/starterhunt.asia/job-info/frontend
+cp vite.config.subfolder.js vite.config.js
+# 然后编辑 vite.config.js，修改 base: '/job-info/' 为你的实际路径
+```
+
+### 步骤 3：安装依赖并构建
 
 ```bash
-cd /www/wwwroot/job-info-website/backend
+cd /www/wwwroot/starterhunt.asia/job-info
+
+# 安装后端依赖
+cd backend
 npm install --production
-```
+cd ..
 
-**注意**：如果不需要爬虫功能，可以移除 `playwright` 依赖：
-```bash
-npm uninstall playwright
-```
-
-### 3.2 安装前端依赖并构建
-
-```bash
-cd /www/wwwroot/job-info-website/frontend
+# 安装前端依赖并构建
+cd frontend
 npm install
-npm run build
+npm run build  # 构建时会使用 base: '/job-info/'
+cd ..
 ```
 
-构建完成后，会在 `frontend/dist/` 目录生成静态文件。
+### 步骤 4：更新 PM2 配置
 
----
-
-## 四、配置后端（PM2）
-
-### 4.1 创建 PM2 配置文件
-
-在项目根目录创建 `ecosystem.config.js`：
+**修改 `ecosystem.config.js`：**
 
 ```javascript
 module.exports = {
   apps: [{
     name: 'job-info-backend',
     script: './backend/server.js',
-    cwd: '/www/wwwroot/job-info-website',
+    cwd: '/www/wwwroot/starterhunt.asia/job-info', // 更新路径
     instances: 1,
     autorestart: true,
     watch: false,
@@ -138,325 +98,137 @@ module.exports = {
     },
     error_file: './logs/pm2-error.log',
     out_file: './logs/pm2-out.log',
-    log_date_format: 'YYYY-MM-DD HH:mm:ss'
+    log_date_format: 'YYYY-MM-DD HH:mm:ss',
+    merge_logs: true
   }]
 }
 ```
 
-### 4.2 创建日志目录
+### 步骤 5：启动后端服务
 
 ```bash
-mkdir -p /www/wwwroot/job-info-website/logs
-mkdir -p /www/wwwroot/job-info-website/backend/uploads
-```
-
-### 4.3 启动后端服务
-
-```bash
-cd /www/wwwroot/job-info-website
+cd /www/wwwroot/starterhunt.asia/job-info
+mkdir -p logs backend/uploads
 pm2 start ecosystem.config.js
 pm2 save
-pm2 startup  # 设置开机自启（按提示执行命令）
 ```
 
-**验证后端是否运行：**
-```bash
-pm2 list
-pm2 logs job-info-backend
-```
+### 步骤 6：配置 Nginx
+⚠️ **重要：使用扩展配置功能，不修改主配置文件！**
 
-访问 `http://你的服务器IP:3001/api/jobs` 应返回 JSON 数据（可能为空数组）。
+**方法一：使用宝塔面板扩展配置（推荐）**
 
----
+1. 在宝塔面板 → **网站** → **starterhunt.asia** → **设置** → **扩展配置**
+2. 点击 **添加扩展配置**
+3. 配置名称：`job-info`
+4. 配置内容：复制 `nginx-extension-subfolder.conf` 文件的内容
+5. 点击 **保存**，然后 **重载配置**
 
-## 五、配置 Nginx
-
-### 5.1 创建站点
-
-在宝塔面板 → **网站** → **添加站点**：
-- **域名**：填写你的域名（如 `job.example.com`）或服务器 IP
-- **根目录**：`/www/wwwroot/job-info-website/frontend/dist`
-- **PHP版本**：纯静态（不需要 PHP）
-
-### 5.2 配置 Nginx 反向代理
-
-在宝塔面板 → **网站** → 点击你的站点 → **设置** → **配置文件**，修改为：
-
-```nginx
-server {
-    listen 80;
-    server_name 你的域名或IP;
-    index index.html;
-    root /www/wwwroot/job-info-website/frontend/dist;
-
-    # 前端静态文件
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # 后端 API 代理
-    location /api {
-        proxy_pass http://localhost:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    # 静态资源缓存
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-
-    # 安全头
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-}
-```
-
-点击 **保存**，然后 **重载配置**。
-
----
-
-## 六、上传 Excel 数据文件
-
-### 6.1 方式一：通过宝塔文件管理器
-
-1. 在宝塔文件管理器中进入 `/www/wwwroot/job-info-website/backend/uploads/`
-2. 上传你的 `jobs.xlsx` 文件
-
-### 6.2 方式二：使用后端 API 上传
-
-访问 `http://你的域名/api/upload`，使用 Postman 或 curl：
+**方法二：手动创建扩展配置文件**
 
 ```bash
-curl -X POST http://你的域名/api/upload \
-  -F "file=@/path/to/jobs.xlsx"
+# 创建扩展配置目录（如果不存在）
+mkdir -p /www/server/panel/vhost/nginx/extension/starterhunt.asia
+
+# 创建配置文件
+nano /www/server/panel/vhost/nginx/extension/starterhunt.asia/job-info.conf
 ```
 
-### 6.3 方式三：使用爬虫脚本生成
+然后复制 `nginx-extension-subfolder.conf` 的内容到文件中。
 
+**测试并重载：**
 ```bash
-cd /www/wwwroot/job-info-website
-python3 create_sample_excel.py
-```
-
-（需要先安装 Python 和 openpyxl）
-
----
-
-## 七、配置防火墙
-
-### 7.1 宝塔安全设置
-
-在宝塔面板 → **安全** 中：
-- ✅ 开放 **80** 端口（HTTP）
-- ✅ 开放 **443** 端口（HTTPS，如果使用 SSL）
-- ❌ **关闭 3001 端口**（后端只允许本地访问）
-
-### 7.2 腾讯云安全组
-
-在腾讯云控制台 → **云服务器** → **安全组**：
-- 开放 **80**、**443** 端口
-- 不开放 **3001** 端口（后端仅内网访问）
-
----
-
-## 八、SSL 证书（可选，推荐）
-
-### 8.1 申请免费 SSL
-
-在宝塔面板 → **网站** → 你的站点 → **SSL** → **Let's Encrypt**：
-- 选择域名
-- 点击 **申请**
-- 开启 **强制 HTTPS**
-
-### 8.2 更新 Nginx 配置
-
-申请 SSL 后，宝塔会自动更新配置。确保 `/api` 代理配置正确。
-
----
-
-## 九、验证部署
-
-### 9.1 检查服务状态
-
-```bash
-# 检查 PM2
-pm2 list
-pm2 logs job-info-backend --lines 50
-
-# 检查 Nginx
-nginx -t
-systemctl status nginx
-```
-
-### 9.2 访问测试
-
-1. **前端**：访问 `http://你的域名`，应看到页面
-2. **后端 API**：访问 `http://你的域名/api/jobs`，应返回 JSON
-3. **上传 Excel**：使用 Postman 测试 `/api/upload`
-
----
-
-## 十、常用维护命令
-
-### 10.1 PM2 管理
-
-```bash
-pm2 list                    # 查看所有进程
-pm2 restart job-info-backend  # 重启后端
-pm2 stop job-info-backend     # 停止后端
-pm2 logs job-info-backend     # 查看日志
-pm2 monit                    # 监控面板
-```
-
-### 10.2 更新代码
-
-```bash
-cd /www/wwwroot/job-info-website
-
-# 如果使用 Git
-git pull origin main
-
-# 重新安装依赖（如有新增）
-cd backend && npm install --production
-cd ../frontend && npm install && npm run build
-
-# 重启服务
-pm2 restart job-info-backend
-```
-
-### 10.3 查看日志
-
-```bash
-# PM2 日志
-pm2 logs job-info-backend
-
-# Nginx 日志
-tail -f /www/wwwlogs/你的域名.log
-
-# 后端错误日志
-cat /www/wwwroot/job-info-website/logs/pm2-error.log
-```
-
----
-
-## 十一、故障排查
-
-### 问题1：前端页面空白
-
-**检查：**
-- Nginx 根目录是否正确指向 `frontend/dist`
-- 构建是否成功：`ls -la frontend/dist/`
-- 浏览器控制台是否有错误
-
-**解决：**
-```bash
-cd frontend
-npm run build
-```
-
-### 问题2：API 请求 502
-
-**检查：**
-- 后端是否运行：`pm2 list`
-- 端口是否正确：`netstat -tlnp | grep 3001`
-- Nginx 代理配置是否正确
-
-**解决：**
-```bash
-pm2 restart job-info-backend
 nginx -t && nginx -s reload
 ```
 
-### 问题3：Excel 文件无法读取
+---
 
-**检查：**
-- 文件是否存在：`ls -la backend/uploads/jobs.xlsx`
-- 文件权限：`chmod 644 backend/uploads/jobs.xlsx`
-- 目录权限：`chmod 755 backend/uploads`
+### 步骤 7：上传 Excel 数据
 
-### 问题4：PM2 进程自动停止
-
-**检查日志：**
 ```bash
-pm2 logs job-info-backend --err
+# 上传 jobs.xlsx 到
+/www/wwwroot/starterhunt.asia/job-info/backend/uploads/jobs.xlsx
 ```
 
-**常见原因：**
-- 端口被占用
-- 依赖缺失
-- 代码错误
+### 验证部署
+
+访问：`http://starterhunt.asia/job-info/`
 
 ---
 
-## 十二、性能优化建议
+## 🛡️ 安全配置方法（推荐）
 
-### 12.1 启用 Gzip 压缩
+**重要：** 如果你的主配置文件包含 `include /www/server/panel/vhost/nginx/extension/starterhunt.asia/*.conf;`，请使用扩展配置功能，**不要修改主配置文件**！
 
-在 Nginx 配置中添加：
-```nginx
-gzip on;
-gzip_vary on;
-gzip_min_length 1024;
-gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
-```
-
-### 12.2 静态资源 CDN（可选）
-
-将 `frontend/dist/assets/` 中的 JS/CSS 文件上传到 CDN，修改构建后的 HTML 引用。
-
-### 12.3 数据库优化（未来）
-
-如果数据量大，考虑将 Excel 数据迁移到 MySQL/MongoDB。
+详细说明请查看：[SAFE_DEPLOY.md](./SAFE_DEPLOY.md)
 
 ---
 
-## 快速部署脚本
+## 📝 重要提示
 
-创建 `deploy.sh`：
+### 1. 前端 base 路径配置
+
+- **子路径部署**：必须在 `vite.config.js` 中设置 `base: '/job-info/'`
+- **根路径部署**：不设置 base 或设置为 `base: '/'`
+
+### 2. Nginx 配置区别
+
+- **子路径**：使用 `location /job-info/` 和 `alias`
+- **根路径**：使用 `location /` 和 `root`
+
+### 3. API 路径
+
+- **子路径**：前端请求 `/job-info/api/jobs`，Nginx 重写为 `/api/jobs` 转发到后端
+- **根路径**：前端请求 `/api/jobs`，直接转发到后端
+
+### 4. 更新代码后重新构建
+
+```bash
+cd /www/wwwroot/starterhunt.asia/job-info/frontend
+npm run build
+pm2 restart job-info-backend
+nginx -s reload
+```
+
+---
+
+## 🔧 快速部署脚本（子文件夹版本）
+
+创建 `deploy-subfolder.sh`：
 
 ```bash
 #!/bin/bash
-cd /www/wwwroot/job-info-website
+PROJECT_DIR="/www/wwwroot/starterhunt.asia/job-info"
 
-echo "安装后端依赖..."
+cd "$PROJECT_DIR"
+
+# 安装后端依赖
 cd backend && npm install --production && cd ..
 
-echo "构建前端..."
+# 构建前端（确保 vite.config.js 已配置 base）
 cd frontend && npm install && npm run build && cd ..
 
-echo "重启服务..."
-pm2 restart job-info-backend
+# 重启 PM2
+pm2 restart job-info-backend || pm2 start ecosystem.config.js
 
-echo "重载 Nginx..."
+# 重载 Nginx
 nginx -s reload
 
-echo "部署完成！"
-```
-
-使用：
-```bash
-chmod +x deploy.sh
-./deploy.sh
+echo "部署完成！访问: http://starterhunt.asia/job-info/"
 ```
 
 ---
 
-## 完成！
+## ❓ 常见问题
 
-部署完成后，访问你的域名即可使用求职信息网站。
+**Q: 页面显示空白，控制台报 404？**
+- 检查 `vite.config.js` 的 `base` 配置是否正确
+- 检查 Nginx 的 `root` 或 `alias` 路径是否正确
 
-**子文件夹部署请参考：** [DEPLOY_SUBFOLDER.md](./DEPLOY_SUBFOLDER.md)
+**Q: API 请求失败？**
+- 检查 Nginx 的 `location /job-info/api` 或 `location /api` 配置
+- 检查后端是否运行：`pm2 list`
 
-如有问题，检查：
-1. PM2 日志：`pm2 logs`
-2. Nginx 日志：`/www/wwwlogs/`
-3. 后端日志：`/www/wwwroot/job-info-website/logs/` 或 `/www/wwwroot/starterhunt.asia/job-info/logs/`
+**Q: 静态资源（JS/CSS）加载失败？**
+- 检查构建后的 `dist/index.html` 中的资源路径
+- 确保 `base` 配置与 Nginx 路径一致
