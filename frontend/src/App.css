@@ -7,11 +7,11 @@
 
 .app-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 30px;
   padding: 20px;
-  background: white;
+  background: rgb(91, 32, 219);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -19,32 +19,6 @@
 .app-header h1 {
   color: #333;
   font-size: 28px;
-}
-
-.upload-section {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.upload-button {
-  padding: 10px 20px;
-  background: #1890ff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s;
-}
-
-.upload-button:hover {
-  background: #40a9ff;
-}
-
-.file-name {
-  color: #666;
-  font-size: 14px;
 }
 
 .filters {
@@ -247,6 +221,47 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 0;
+}
+
+.job-card-right {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  padding-left: 16px;
+  border-left: 1px solid #f0f0f0;
+}
+
+.job-salary,
+.job-benefits {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.job-salary-label,
+.job-benefits-label {
+  font-size: 11px;
+  color: #8c8c8c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.job-salary-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f1f1f;
+}
+
+.job-benefits-value {
+  font-size: 12px;
+  color: #595959;
+  max-width: 200px;
+  text-align: right;
+  line-height: 1.4;
 }
 
 .job-card-header {
@@ -289,9 +304,9 @@
   font-weight: 500;
 }
 
+.job-industry,
 .job-location {
-  padding-left: 8px;
-  border-left: 1px solid #e8e8e8;
+  color: #8c8c8c;
 }
 
 .job-tags {
@@ -355,7 +370,28 @@
 
   .job-card-main {
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: flex-start;
+  }
+
+  .job-card-right {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #f0f0f0;
+    padding-left: 0;
+    padding-top: 12px;
+    margin-top: 4px;
+    align-items: flex-start;
+  }
+
+  .job-salary,
+  .job-benefits {
+    align-items: flex-start;
+  }
+
+  .job-benefits-value {
+    text-align: left;
+    max-width: none;
   }
 
   .logo-circle {

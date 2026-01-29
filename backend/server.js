@@ -57,6 +57,8 @@ function readExcelFile(filePath) {
       职位: row['职位'] || '',
       地点: row['地点'] || '',
       投递截止: row['投递截止'] || '',
+      薪资: row['薪资'] || '',
+      福利待遇: row['福利待遇'] || '',
       操作: row['操作'] || ''
     }));
   } catch (error) {
@@ -103,15 +105,12 @@ app.get('/api/jobs', (req, res) => {
     );
   }
 
-  // 是否仅看实习岗位
+  // 是否仅看实习岗位：只筛选标签中包含「实习」的卡片
   if (internship === 'true') {
-    jobs = jobs.filter(job => {
-      const text = `${job.标签 || ''}${job.批次 || ''}`;
-      return text.includes('实习');
-    });
+    jobs = jobs.filter(job => (job.标签 || '').includes('实习'));
   }
 
-  // 关键词搜索：公司 / 职位 / 行业 / 标签 / 批次 / 地点
+  // 关键词搜索：公司 / 职位 / 行业 / 标签 / 批次 / 地点 / 薪资 / 福利待遇
   if (keyword && keyword.trim()) {
     const kw = keyword.trim();
     jobs = jobs.filter(job => {
@@ -121,7 +120,9 @@ app.get('/api/jobs', (req, res) => {
         job.行业,
         job.标签,
         job.批次,
-        job.地点
+        job.地点,
+        job.薪资,
+        job.福利待遇
       ];
       return fields.some(v => v && v.includes(kw));
     });
