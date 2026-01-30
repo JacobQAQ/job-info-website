@@ -109,7 +109,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>求职信息</h1>
+        <h1>2026网申职位表</h1>
         <p className="app-header-sub">发现校招与实习机会</p>
       </header>
 
