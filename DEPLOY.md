@@ -156,14 +156,6 @@ nginx -t && nginx -s reload
 
 ---
 
-## 🛡️ 安全配置方法（推荐）
-
-**重要：** 如果你的主配置文件包含 `include /www/server/panel/vhost/nginx/extension/starterhunt.asia/*.conf;`，请使用扩展配置功能，**不要修改主配置文件**！
-
-详细说明请查看：[SAFE_DEPLOY.md](./SAFE_DEPLOY.md)
-
----
-
 ## 📝 重要提示
 
 ### 1. 前端 base 路径配置
